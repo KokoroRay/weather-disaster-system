@@ -1,13 +1,12 @@
 version: '3.8'
 
 services:
-
-  # 2. Kong Gateway (Cổng bảo vệ)
+  # 2. Kong Gateway
   kong:
     image: kong:latest
     container_name: wds-gateway
     environment:
-      KONG_DATABASE: "off" # Chạy ở chế độ dbless để đơn giản hóa giai đoạn đầu
+      KONG_DATABASE: "off"
       KONG_PROXY_ACCESS_LOG: /dev/stdout
       KONG_ADMIN_ACCESS_LOG: /dev/stdout
       KONG_PROXY_ERROR_LOG: /dev/stderr
@@ -15,13 +14,12 @@ services:
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
       TZ: ${TZ}
     ports:
-      - "8000:8000" # Cổng cho Web/Mobile gọi vào
-      - "8001:8001" # Cổng quản trị API
-    depends_on:
-      - postgres-db
+      - "8000:8000"
+      - "8001:8001"
     restart: unless-stopped
+    # Depends on DB removed as Kong runs in dbless mode
 
-  # 3. n8n (Tự động hóa thu thập dữ liệu)
+    # 3. n8n
   n8n:
     image: n8nio/n8n:latest
     container_name: wds-n8n
@@ -38,5 +36,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  postgres_data:
   n8n_data:
