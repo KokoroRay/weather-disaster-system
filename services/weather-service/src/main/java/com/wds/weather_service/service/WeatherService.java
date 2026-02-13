@@ -44,7 +44,7 @@ public class WeatherService {
 
     public void saveWeatherFromN8n(com.wds.weather_service.dto.request.WeatherIngestionRequest request){
         Location location = locationRepository.findByCityCode(request.getCityCode())
-                .orElseThrow(() -> new RuntimeException("City Code không tồn tại!"));
+                .orElseThrow(() -> new RuntimeException("City Code '" + request.getCityCode() + "' không tồn tại!"));
         
         WeatherData data = new WeatherData();
         data.setLocation(location);
