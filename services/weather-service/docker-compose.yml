@@ -3,6 +3,7 @@ services:
   postgres-db:
     image: postgres:15
     container_name: postgres-db-weather-service
+    env_file: .env
     environment:
       POSTGRES_DB: weather_service_db
       POSTGRES_USER: admin
@@ -21,6 +22,7 @@ services:
   weather-service:
     build: .
     container_name: weather-service
+    env_file: .env
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/weather_service_db
       - SPRING_DATASOURCE_USERNAME=admin
