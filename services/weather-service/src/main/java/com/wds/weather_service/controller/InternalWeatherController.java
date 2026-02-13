@@ -16,17 +16,17 @@ public class InternalWeatherController {
     private final tools.jackson.databind.ObjectMapper objectMapper;
 
     @PostMapping("/ingest")
-    public ResponseEntity<String> ingestData(@RequestBody tools.jackson.databind.JsonNode json) {
+    public ResponseEntity<java.util.Map<String, Object>> ingestData(@RequestBody tools.jackson.databind.JsonNode json) {
         if (json.isArray()) {
             List<WeatherIngestionRequest> requests = java.util.Arrays.asList(objectMapper.convertValue(json, WeatherIngestionRequest[].class));
             for (WeatherIngestionRequest request : requests) {
                 weatherService.saveWeatherFromN8n(request);
             }
-            return ResponseEntity.ok("Received " + requests.size() + " records");
+            return ResponseEntity.ok(java.util.Map.of("message", "Received " + requests.size() + " records"));
         } else {
             WeatherIngestionRequest request = objectMapper.convertValue(json, WeatherIngestionRequest.class);
             weatherService.saveWeatherFromN8n(request);
-            return ResponseEntity.ok("Received 1 record");
+            return ResponseEntity.ok(java.util.Map.of("message", "Received 1 record"));
         }
     }
 }
