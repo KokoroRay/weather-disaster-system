@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  # 1. Databases
+  postgres-db-weather:
+    image: postgres:15
+    container_name: postgres-db-weather
+    environment:
+      POSTGRES_DB: weather_service_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      TZ: UTC
+      PGTZ: UTC
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_weather_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d weather_service_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mysql-db-user:
+    image: mysql:8.0
+    container_name: mysql-db-user
+    environment:
+      MYSQL_DATABASE: user_service_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: 123456
+      MYSQL_USER: root
+      TZ: UTC
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_user_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 2. Kong Gateway
+  kong:
+    image: kong:latest
+    container_name: wds-gateway
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      TZ: UTC
+    volumes:
+      - ./api-gateway/kong.yml:/usr/local/kong/declarative/kong.yml
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    restart: unless-stopped
+
+  # 3. Application Services
+  user-service:
+    build:
+      context: ./services/user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    environment:
+      SERVER_PORT: 8080
+      MYSQL_HOST: mysql-db-user
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: user_service_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
+      # Add JWT/Google secrets here or use .env file
+      JWT_SECRET: ${JWT_SECRET:-default_secret_key_change_me}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-dummy_client_id}
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql-db-user:
+        condition: service_healthy
+
+  weather-service:
+    build:
+      context: ./services/weather-service
+      dockerfile: Dockerfile
+    container_name: weather-service
+    environment:
+      SERVER_PORT: 8081 # Override default 8080 to avoid conflict
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db-weather:5432/weather_service_db?options=-c+timezone%3DUTC
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin123
+      JWT_SECRET: ${JWT_SECRET:-default_secret_key_change_me}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-dummy_client_id}
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres-db-weather:
+        condition: service_healthy
+
+  # 4. n8n Workflow Automation
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: wds-n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE:-true}
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-admin123}
+      - GENERIC_TIMEZONE=UTC
+      - TZ=UTC
+    volumes:
+      - n8n_data:/home/node/.n8n
+    restart: unless-stopped
+
+volumes:
+  postgres_weather_data:
+  mysql_user_data:
+  n8n_data:
