@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM openjdk:17-jdk-slim AS build
+FROM eclipse-temurin:17-jdk-focal AS build
 WORKDIR /app
 
 # Copy maven wrapper and project definition
@@ -18,7 +18,7 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests
 
 # Stage 2: Run the application
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-focal
 WORKDIR /app
 
 # Copy the jar file from the build stage

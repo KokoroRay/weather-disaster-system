@@ -20,7 +20,7 @@ services:
         strip_path: false
 
   - name: weather-service
-    url: http://weather-service:8081
+    url: http://weather-service:8080
     routes:
       - name: weather-admin-route
         paths:
