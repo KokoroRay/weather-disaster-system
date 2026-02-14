@@ -1,8 +1,40 @@
-INSERT INTO locations (city_code, city_name, region, latitude, longitude) VALUES ('HANOI', 'Hanoi', 'North', 21.0285, 105.8542) ON CONFLICT (city_code) DO NOTHING;
-INSERT INTO locations (city_code, city_name, region, latitude, longitude) VALUES ('HCM', 'Ho Chi Minh City', 'South', 10.8231, 106.6297) ON CONFLICT (city_code) DO NOTHING;
-INSERT INTO locations (city_code, city_name, region, latitude, longitude) VALUES ('DNA', 'Da Nang', 'Central', 16.0544, 108.2022) ON CONFLICT (city_code) DO NOTHING;
-
--- IATA Codes for potentially automated ingestion
-INSERT INTO locations (city_code, city_name, region, latitude, longitude) VALUES ('HAN', 'Hanoi - Noi Bai', 'North', 21.0285, 105.8542) ON CONFLICT (city_code) DO NOTHING;
-INSERT INTO locations (city_code, city_name, region, latitude, longitude) VALUES ('SGN', 'Ho Chi Minh - Tan Son Nhat', 'South', 10.8231, 106.6297) ON CONFLICT (city_code) DO NOTHING;
-INSERT INTO locations (city_code, city_name, region, latitude, longitude) VALUES ('DAD', 'Da Nang - International', 'Central', 16.0544, 108.2022) ON CONFLICT (city_code) DO NOTHING;
+-- Insert locations data for Vietnam provinces
+INSERT INTO locations (city_code, city_name, region, latitude, longitude)
+VALUES ('HAN', 'Hanoi', 'North', 21.0285, 105.8542),
+       ('SGN', 'Ho Chi Minh City', 'South', 10.8231, 106.6297),
+       ('DAD', 'Da Nang', 'Central', 16.0544, 108.2022),
+       ('HPH', 'Hai Phong', 'North', 20.8449, 106.6881),
+       ('VCA', 'Can Tho', 'South', 10.0452, 105.7469),
+       ('HUE', 'Hue', 'Central', 16.4637, 107.5909),
+       ('CXR', 'Nha Trang', 'Central', 12.2451, 109.1943),
+       ('VII', 'Vinh', 'North Central', 18.6735, 105.6813),
+       ('DLI', 'Da Lat', 'Central Highlands', 11.9404, 108.4583),
+       ('UIH', 'Quy Nhon', 'Central', 13.7767, 109.2243),
+       ('BMV', 'Buon Ma Thuot', 'Central Highlands', 12.6667, 108.0500),
+       ('PHU', 'Phan Thiet', 'South', 10.9333, 108.1000),
+       ('VKG', 'Rach Gia', 'South', 10.0125, 105.0809),
+       ('CAH', 'Ca Mau', 'South', 9.1769, 105.1524),
+       ('TBB', 'Tuy Hoa', 'Central', 13.0889, 109.3025),
+       ('PXU', 'Pleiku', 'Central Highlands', 13.9833, 108.0000),
+       ('THD', 'Thanh Hoa', 'North', 19.8075, 105.7764),
+       ('VDH', 'Dong Hoi', 'Central', 17.4833, 106.6000),
+       ('VCL', 'Chu Lai', 'Central', 15.4083, 108.7050),
+       ('VCS', 'Con Dao', 'South', 8.6833, 106.6000),
+       ('PQC', 'Phu Quoc', 'South', 10.2289, 103.9572),
+       ('DIN', 'Dien Bien', 'North', 21.3833, 103.0167),
+       ('SLA', 'Son La', 'North', 21.3289, 103.9119),
+       ('LCA', 'Lao Cai', 'North', 22.4833, 103.9667),
+       ('LSN', 'Lang Son', 'North', 21.8500, 106.7500),
+       ('HGI', 'Ha Giang', 'North', 22.8167, 104.9833),
+       ('NDI', 'Nam Dinh', 'North', 20.4167, 106.1667),
+       ('TBH', 'Thai Binh', 'North', 20.4500, 106.3333),
+       ('BNI', 'Bac Ninh', 'North', 21.1833, 106.0667),
+       ('LAN', 'Long An', 'South', 10.5333, 106.4167),
+       ('VTU', 'Vung Tau', 'South', 10.3500, 107.0833),
+       ('BHO', 'Bien Hoa', 'South', 10.9500, 106.8167),
+       ('TDM', 'Thu Dau Mot', 'South', 10.9833, 106.6667),
+       ('PRV', 'Phan Rang', 'Central', 11.5667, 108.9833)
+ON CONFLICT (city_code) DO UPDATE SET
+    latitude = EXCLUDED.latitude,
+    longitude = EXCLUDED.longitude,
+    region = EXCLUDED.region;
