@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface LocationRepository extends JpaRepository<Location, Long> {
     Optional<Location> findByCityCode(String cityCode);
+    Optional<Location> findByCityName(String cityName);
 
     @Query(value = "SELECT * FROM locations l " +
             "ORDER BY ((l.latitude - :lat) * (l.latitude - :lat) + " +
