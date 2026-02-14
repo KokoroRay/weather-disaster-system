@@ -1,8 +1,9 @@
 services:
-
+  # Weather Service Database
   postgres-db:
     image: postgres:15
     container_name: postgres-db-weather-service
+    env_file: .env
     environment:
       POSTGRES_DB: weather_service_db
       POSTGRES_USER: admin
@@ -10,47 +11,36 @@ services:
       TZ: UTC
       PGTZ: UTC
     ports:
-      - "5432:5432"
+      - "5432:5432" # Consider mapping to different port on host if running multiple DBs locally
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  # 2. Kong Gateway
-  kong:
-    image: kong:latest
-    container_name: wds-gateway-weather-service
-    environment:
-      KONG_DATABASE: "off"
-      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
-      KONG_PROXY_ACCESS_LOG: /dev/stdout
-      KONG_ADMIN_ACCESS_LOG: /dev/stdout
-      KONG_PROXY_ERROR_LOG: /dev/stderr
-      KONG_ADMIN_ERROR_LOG: /dev/stderr
-      KONG_ADMIN_LISTEN: 0.0.0.0:8001
-      TZ: ${TZ}
-    volumes:
-      - ../../api-gateway/kong.yml:/usr/local/kong/declarative/kong.yml
-    ports:
-      - "8000:8000"
-      - "8001:8001"
+    networks:
+      - wds-network
     restart: unless-stopped
-    # 3. n8n
-  n8n:
-    image: n8nio/n8n:latest
-    container_name: wds-n8n-weather-service
-    ports:
-      - "5678:5678"
+
+  # Weather Service Application
+  weather-service:
+    build: .
+    container_name: weather-service
+    env_file: .env
     environment:
-      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE}
-      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
-      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
-      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
-      - TZ=${TZ}
-    volumes:
-      - n8n_data:/home/node/.n8n
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/weather_service_db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin123
+      - TZ=UTC
+    depends_on:
+      - postgres-db
+    ports:
+      - "8081:8080" # Exposed on 8081 host, 8080 internal
+    networks:
+      - wds-network
     restart: unless-stopped
 
 volumes:
-  n8n_data:
   postgres_data:
 
 
+networks:
+  wds-network:
+    external: true
+    name: wds-network

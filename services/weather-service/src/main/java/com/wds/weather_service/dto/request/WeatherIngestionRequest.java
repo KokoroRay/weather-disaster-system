@@ -10,4 +10,5 @@ public class WeatherIngestionRequest {
     private Double windSpeed;
     private String weatherCondition;
     private String alertLevel;
+    private String icon;
 }
