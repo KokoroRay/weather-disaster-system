@@ -1,0 +1,46 @@
+services:
+  # Weather Service Database
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-db-weather-service
+    env_file: .env
+    environment:
+      POSTGRES_DB: weather_service_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      TZ: UTC
+      PGTZ: UTC
+    ports:
+      - "5432:5432" # Consider mapping to different port on host if running multiple DBs locally
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - wds-network
+    restart: unless-stopped
+
+  # Weather Service Application
+  weather-service:
+    build: .
+    container_name: weather-service
+    env_file: .env
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/weather_service_db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin123
+      - TZ=UTC
+    depends_on:
+      - postgres-db
+    ports:
+      - "8081:8080" # Exposed on 8081 host, 8080 internal
+    networks:
+      - wds-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+
+networks:
+  wds-network:
+    external: true
+    name: wds-network
