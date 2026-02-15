@@ -28,7 +28,7 @@ import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl  {
+public class AuthServiceImpl implements AuthService  {
 
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
