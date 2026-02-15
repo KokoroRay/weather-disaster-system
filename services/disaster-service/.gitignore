@@ -1,6 +1,6 @@
 HELP.md
 target/
-.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -31,3 +31,35 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### OS Specific ###
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+### Logs ###
+*.log
+logs/
+
+### Secrets & Environment Variables (QUAN TRỌNG) ###
+.env
+.env.*
+!.env.example
+*.env
+env/
+
+### Application Specific ###
+# Ignore local configuration overrides
+application-local.properties
+application-local.yml
+application-secret.properties
+application-secret.yml
+
+### Docker ###
+# Nếu bạn map volume ra thư mục local thay vì named volume
+postgres_data/
+n8n_data/
