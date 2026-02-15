@@ -1,10 +1,11 @@
-package com.wds.user_service.service;
+package com.wds.user_service.service.impl;
 
 import com.wds.user_service.dto.request.ChangePasswordRequest;
 import com.wds.user_service.dto.request.UpdateProfileRequest;
 import com.wds.user_service.dto.response.UserResponse;
 import com.wds.user_service.entity.User;
 import com.wds.user_service.repository.UserRepository;
+import com.wds.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;

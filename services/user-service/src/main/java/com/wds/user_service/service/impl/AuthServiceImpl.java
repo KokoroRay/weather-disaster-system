@@ -1,4 +1,4 @@
-package com.wds.user_service.service;
+package com.wds.user_service.service.impl;
 
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -16,6 +16,7 @@ import com.wds.user_service.exception.ErrorCode;
 import com.wds.user_service.entity.constants.AuthProvider;
 import com.wds.user_service.entity.constants.Role;
 import com.wds.user_service.repository.UserRepository;
+import com.wds.user_service.service.AuthService;
 import com.wds.user_service.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +29,7 @@ import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService  {
+public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;

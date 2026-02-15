@@ -1,4 +1,4 @@
-package com.wds.weather_service.service;
+package com.wds.weather_service.service.Impl;
 
 import com.wds.weather_service.dto.request.ForecastIngestionRequest;
 import com.wds.weather_service.dto.request.WeatherIngestionRequest;
@@ -8,6 +8,7 @@ import com.wds.weather_service.entity.WeatherData;
 import com.wds.weather_service.mapper.WeatherMapper;
 import com.wds.weather_service.repository.LocationRepository;
 import com.wds.weather_service.repository.WeatherDataRepository;
+import com.wds.weather_service.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class WeatherServiceImpl implements WeatherService{
+public class WeatherServiceImpl implements WeatherService {
 
     private final LocationRepository locationRepository;
     private final WeatherDataRepository weatherDataRepository;
