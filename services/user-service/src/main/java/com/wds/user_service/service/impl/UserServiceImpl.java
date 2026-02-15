@@ -25,11 +25,13 @@ public class UserServiceImpl implements UserService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    @Override
     public UserResponse getMyProfile() {
         User user = userRepository.findByEmail(getCurrentUserEmail())
                 .orElseThrow(() -> new RuntimeException("User not found!"));
         return UserResponse.fromEntity(user);
     }
+    @Override
     public UserResponse updateProfile (UpdateProfileRequest request) {
         User user = userRepository.findByEmail(getCurrentUserEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -40,6 +42,7 @@ public class UserServiceImpl implements UserService {
         return UserResponse.fromEntity(user);
     }
 
+    @Override
     public void changePassword(ChangePasswordRequest request) {
         User user = userRepository.findByEmail(getCurrentUserEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -50,11 +53,13 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(UserResponse::fromEntity)
                 .collect(Collectors.toList());
     }
+    @Override
     public void lockUser(Long userId, boolean isLocked) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
         user.setLocked(isLocked);

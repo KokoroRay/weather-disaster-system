@@ -23,12 +23,14 @@ public class WeatherServiceImpl implements WeatherService {
     private final com.wds.weather_service.repository.WeatherForecastRepository weatherForecastRepository;
     private final WeatherMapper weatherMapper;
 
+    @Override
     public WeatherResponse getCurrentWeatherByCity(String cityCode){
         WeatherData weatherData = weatherDataRepository.findTopByLocationCityCodeOrderByRecordedAtDesc(cityCode)
                 .orElseThrow(() -> new RuntimeException("Weather data is not available for this city."));
         return weatherMapper.toResponse(weatherData);
     }
 
+    @Override
     public WeatherResponse getCurrentWeatherByGPS(Double lat, Double lon){
         Location nearestLocation = locationRepository.findNearestLocation(lat,lon)
                 .orElseThrow(() -> new RuntimeException("Nearest location is not available for this city."));
@@ -36,6 +38,7 @@ public class WeatherServiceImpl implements WeatherService {
                 .orElseThrow(() -> new RuntimeException("Weather data is not available for this city."));
         return weatherMapper.toResponse(weatherData);
     }
+    @Override
     public WeatherData updateWeather(String cityCode,WeatherData weatherData){
         Location location = locationRepository.findByCityCode(cityCode)
                 .orElseThrow(() -> new RuntimeException("Location is not available for this city."));
@@ -46,6 +49,7 @@ public class WeatherServiceImpl implements WeatherService {
         return weatherDataRepository.save(weatherData);
     }
 
+    @Override
     public void saveWeatherFromN8n(WeatherIngestionRequest request){
         String cityCode = request.getCityCode() != null ? request.getCityCode() : mapCityNameToCode(request.getCity());
 
@@ -78,6 +82,7 @@ public class WeatherServiceImpl implements WeatherService {
         return location.getCityCode();
     }
 
+    @Override
     public void saveForecastFromN8n(ForecastIngestionRequest request) {
         Location location = locationRepository.findByCityCode(request.getCityCode())
                 .orElseThrow(() -> new RuntimeException("City Code '" + request.getCityCode() + "' không tồn tại!"));

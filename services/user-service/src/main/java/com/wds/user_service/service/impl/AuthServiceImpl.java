@@ -38,6 +38,7 @@ public class AuthServiceImpl implements AuthService {
     @Value("${GOOGLE_CLIENT_ID}")
     private String googleClientId;
 
+    @Override
     public UserResponse register(RegisterRequest registerRequest) {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
             throw new AppException(ErrorCode.USER_EXISTED);
@@ -65,6 +66,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
+    @Override
     public AuthResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("User not found!"));
@@ -81,6 +83,7 @@ public class AuthServiceImpl implements AuthService {
         return new AuthResponse(jwt, user.getFirstName(), user.getLastName(), user.getRole().name());
     }
 
+    @Override
     public  AuthResponse authenticateGoogle(GoogleLoginRequest request) {
         try {
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())

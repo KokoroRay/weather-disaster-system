@@ -3,7 +3,7 @@ package com.wds.disaster_service.dto.request;
 import lombok.Data;
 
 @Data
-public class SosRequestDto {
+public class SosRequest {
 
     private String message;
     private Double latitude;
