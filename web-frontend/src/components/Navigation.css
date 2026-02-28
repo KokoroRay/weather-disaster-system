@@ -1,0 +1,136 @@
+.sidebar {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    bottom: 24px;
+    width: 80px;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 0;
+    z-index: 50;
+    transition: var(--transition-slow);
+}
+
+.sidebar-logo {
+    margin-bottom: 48px;
+}
+
+.sidebar-logo .logo {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex-grow: 1;
+}
+
+.nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    color: var(--text-secondary);
+    transition: var(--transition-fast);
+    text-decoration: none;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--accent-main);
+    transform: translateY(-2px);
+}
+
+.nav-item.active {
+    background: var(--accent-main);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.nav-tooltip {
+    position: absolute;
+    left: 100%;
+    margin-left: 16px;
+    padding: 8px 12px;
+    background: var(--text-primary);
+    color: #fff;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-10px);
+    transition: var(--transition-fast);
+    z-index: 100;
+    box-shadow: var(--shadow-lg);
+}
+
+/* Tooltip Arrow */
+.nav-tooltip::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent var(--text-primary) transparent transparent;
+}
+
+.nav-item:hover .nav-tooltip {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Layout adjustments */
+body {
+    padding-left: 104px;
+    /* 80px sidebar + 24px gap */
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        bottom: 0;
+        left: 0;
+        top: auto;
+        width: 100%;
+        height: 70px;
+        flex-direction: row;
+        padding: 0 24px;
+        border-radius: 24px 24px 0 0;
+        justify-content: space-between;
+    }
+
+    .sidebar-logo {
+        display: none;
+    }
+
+    .nav-links {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        margin: 0 auto;
+    }
+
+    .nav-footer {
+        display: flex;
+        align-items: center;
+    }
+
+    body {
+        padding-left: 0;
+        padding-bottom: 70px;
+    }
+
+    .nav-tooltip {
+        display: none;
+    }
+}

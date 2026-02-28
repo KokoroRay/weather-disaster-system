@@ -1,22 +1,27 @@
-import React from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { motion } from 'framer-motion';
 import './BentoCard.css';
 
 interface BentoCardProps {
-    children: React.ReactNode;
+    children: ReactNode;
     className?: string;
-    gridArea?: string; // Optional CSS grid area for layout
-    style?: React.CSSProperties;
+    gridArea?: string;
+    style?: CSSProperties;
+    delay?: number;
 }
 
-export function BentoCard({ children, className = '', gridArea, style }: BentoCardProps) {
+export function BentoCard({ children, className = '', gridArea, style, delay = 0 }: BentoCardProps) {
     const combinedStyle = gridArea ? { gridArea, ...style } : style;
 
     return (
-        <div
+        <motion.div
             className={`glass-panel bento-card ${className}`}
             style={combinedStyle}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
         >
             {children}
-        </div>
+        </motion.div>
     );
 }
