@@ -1,0 +1,91 @@
+.aqi-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.aqi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.icon-wind {
+    color: var(--text-secondary);
+}
+
+.section-title {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.aqi-badge {
+    background: var(--accent-main);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.aqi-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.aqi-value {
+    font-size: 3rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.aqi-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    margin-bottom: 24px;
+}
+
+.aqi-bar-container {
+    margin-top: auto;
+}
+
+.aqi-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right,
+            #38bdf8 0%,
+            #4ade80 25%,
+            #fbbf24 50%,
+            #fb923c 75%,
+            #f87171 100%);
+    position: relative;
+    margin-bottom: 8px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.aqi-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    background: white;
+    border-radius: 50%;
+    border: 2px solid #09090b;
+    box-shadow: 0 2px 5px rgba(15, 23, 42, 0.1);
+}
+
+.aqi-scale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
