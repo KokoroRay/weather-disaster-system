@@ -1,0 +1,150 @@
+.home-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0 32px 0;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.logo .text-neon {
+    font-size: 2.2rem;
+    line-height: 0;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    border: 4px solid rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+}
+
+/* Bento Grid Layout */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: minmax(180px, auto);
+    gap: 24px;
+}
+
+/* 
+Desktop Layout Grid Areas
+*/
+.area-main {
+    grid-column: span 8;
+    grid-row: span 2;
+}
+
+.area-aqi {
+    grid-column: span 4;
+    grid-row: span 1;
+}
+
+.area-alert {
+    grid-column: span 4;
+    grid-row: span 1;
+}
+
+.area-highlights {
+    grid-column: span 6;
+    grid-row: span 2;
+}
+
+.area-hourly {
+    grid-column: span 6;
+    grid-row: span 1;
+}
+
+.area-advice {
+    grid-column: span 6;
+    grid-row: span 1;
+}
+
+
+/* Tablet Layout */
+@media (max-width: 1024px) {
+    .bento-grid {
+        grid-template-columns: repeat(8, 1fr);
+    }
+
+    .area-main {
+        grid-column: span 8;
+        grid-row: span 2;
+    }
+
+    .area-aqi {
+        grid-column: span 4;
+        grid-row: span 1;
+    }
+
+    .area-alert {
+        grid-column: span 4;
+        grid-row: span 1;
+    }
+
+    .area-highlights {
+        grid-column: span 8;
+        grid-row: span 2;
+    }
+
+    .area-hourly {
+        grid-column: span 8;
+        grid-row: span 1;
+    }
+
+    .area-advice {
+        grid-column: span 8;
+        grid-row: span 1;
+    }
+}
+
+/* Mobile Layout */
+@media (max-width: 768px) {
+    .bento-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .area-main,
+    .area-aqi,
+    .area-alert,
+    .area-hourly,
+    .area-highlights,
+    .area-advice {
+        grid-column: span 1;
+        grid-row: auto;
+        min-height: 200px;
+    }
+}
