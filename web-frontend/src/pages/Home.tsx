@@ -27,16 +27,16 @@ export function Home() {
                     <AQIChart />
                 </BentoCard>
 
-                <BentoCard className="area-hourly" delay={0.3}>
-                    <HourlyForecast />
+                <BentoCard className="area-alert" delay={0.3}>
+                    <DisasterAlert />
                 </BentoCard>
 
                 <BentoCard className="area-highlights" delay={0.4}>
                     <TodayHighlights />
                 </BentoCard>
 
-                <BentoCard className="area-alert" delay={0.5}>
-                    <DisasterAlert />
+                <BentoCard className="area-hourly" delay={0.5}>
+                    <HourlyForecast />
                 </BentoCard>
 
                 <BentoCard className="area-advice" delay={0.6}>

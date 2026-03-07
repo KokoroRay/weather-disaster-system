@@ -20,7 +20,5 @@ public class NotificationHistory {
     private String type;
 
     private boolean isRead = false;
-    private LocalDateTime createAt = LocalDateTime.now();
-
-
-}
+    private LocalDateTime createdAt = LocalDateTime.now();
+    }

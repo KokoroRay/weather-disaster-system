@@ -43,6 +43,14 @@
   padding: 0;
 }
 
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  text-align: left;
+}
+
 body {
   font-family: var(--font-family);
   background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);

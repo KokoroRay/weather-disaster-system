@@ -2,14 +2,21 @@
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 24px;
+    padding: 24px 24px 24px 0;
+    /* Align perfectly with top: 24px fixed sidebar */
+    box-sizing: border-box;
 }
 
 .home-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0 32px 0;
+    height: 80px;
+    /* Aligns exactly with sidebar-logo height */
+    padding: 0;
+    margin: 0 0 24px 0;
+    /* Space between header and bento-grid */
+    box-sizing: border-box;
 }
 
 .logo {
