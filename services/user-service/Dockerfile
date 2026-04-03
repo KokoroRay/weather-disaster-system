@@ -1,31 +1,31 @@
-# Stage 1: Build the application
-FROM eclipse-temurin:17-jdk-focal AS build
+# STAGE 1: Build stage (Debian-based để khớp glibc)
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
-
-# Copy maven wrapper and project definition
-COPY .mvn/ .mvn/
-COPY mvnw pom.xml ./
-
-# Convert line endings of mvnw to LF (in case it was saved with CRLF on Windows) and make executable
-# sed is used to remove carriage returns
-RUN apt-get update && apt-get install -y dos2unix && dos2unix mvnw && chmod +x mvnw
-
-# Download dependencies (this layer will be cached if pom.xml doesn't change)
-RUN ./mvnw dependency:go-offline
-
-# Copy the source code and build
+COPY pom.xml .
+RUN --mount=type=cache,target=/root/.m2 mvn dependency:go-offline
 COPY src ./src
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
-# Stage 2: Run the application
-FROM eclipse-temurin:17-jdk-focal
+# Tối ưu JRE với đầy đủ module cho Spring Boot JPA
+RUN jlink \
+    --add-modules java.base,java.sql,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,jdk.unsupported,java.compiler,java.xml,jdk.crypto.ec \
+    --strip-debug \
+    --no-man-pages \
+    --no-header-files \
+    --compress=2 \
+    --output /javaruntime
+
+# STAGE 2: Runtime (Giữ nguyên Distroless CC như đã sửa)
+FROM gcr.io/distroless/cc-debian11:latest
 WORKDIR /app
 
-# Copy the jar file from the build stage
+# Copy Custom JRE và App
+COPY --from=build /javaruntime /opt/java
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose the application port
-EXPOSE 8080
+# Cấu hình môi trường vận hành thực tế [cite: 100, 250]
+ENV PATH="/opt/java/bin:$PATH"
+USER nonroot
 
-# Command to run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Sử dụng ENTRYPOINT dạng exec để đảm bảo nhận tín hiệu SIGTERM (PID 1) [cite: 250, 253]
+ENTRYPOINT ["/opt/java/bin/java", "-jar", "app.jar"]
