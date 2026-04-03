@@ -1,31 +1,39 @@
-# Stage 1: Build the application
-FROM eclipse-temurin:17-jdk-focal AS build
+# STAGE 1: Build & Create Custom JRE
+# Sử dụng image Maven có sẵn để tránh 'apk add maven' mất 126s 
+FROM maven:3.9.6-eclipse-temurin-17-alpine AS build
 WORKDIR /app
 
-# Copy maven wrapper and project definition
-COPY .mvn/ .mvn/
-COPY mvnw pom.xml ./
+# Tận dụng Cache Mount để lần build thứ 2 chỉ mất vài giây [cite: 142, 143]
+COPY pom.xml .
+RUN --mount=type=cache,target=/root/.m2 mvn dependency:go-offline
 
-# Convert line endings of mvnw to LF (in case it was saved with CRLF on Windows) and make executable
-# sed is used to remove carriage returns
-RUN apt-get update && apt-get install -y dos2unix && dos2unix mvnw && chmod +x mvnw
-
-# Download dependencies (this layer will be cached if pom.xml doesn't change)
-RUN ./mvnw dependency:go-offline
-
-# Copy the source code and build
 COPY src ./src
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
-# Stage 2: Run the application
-FROM eclipse-temurin:17-jdk-focal
+# TẠO CUSTOM JRE (Cốt lõi để đạt kích thước siêu nhỏ) [cite: 53]
+RUN jlink \
+    --add-modules java.base,java.sql,java.naming,java.desktop,java.management,java.security.jgss,java.instrument \
+    --strip-debug \
+    --no-man-pages \
+    --no-header-files \
+    --compress=2 \
+    --output /javaruntime
+
+# STAGE 2: Runtime Stage (Chuẩn bảo mật tuyệt đối)
+# Sử dụng Distroless để không có Shell, giảm bề mặt tấn công 
+FROM gcr.io/distroless/static-debian11:latest
 WORKDIR /app
 
-# Copy the jar file from the build stage
+# Copy Custom JRE và App Artifact
+COPY --from=build /javaruntime /opt/java
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose the application port
-EXPOSE 8080
+# Thiết lập biến môi trường cho Java
+ENV PATH="$PATH:/opt/java/bin"
+USER nonroot
 
-# Command to run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Healthcheck Native (Có thể dùng Java class hoặc entrypoint thông minh)
+# Đối với Distroless, nên dùng cơ chế Healthcheck của Orchestrator (K8s) 
+# hoặc script Java đơn giản bên trong app 
+
+ENTRYPOINT ["/opt/java/bin/java", "-jar", "app.jar"]
